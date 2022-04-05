@@ -10,7 +10,7 @@ const Transaction = db.define("Transaction", {
   timestamp: {
     type: Sequelize.DATE,
   },
-  type: {
+  transactionType: {
     type: Sequelize.ENUM,
     values: ["pay", "spend"],
   },
