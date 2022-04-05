@@ -21,8 +21,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// auth and api routes
-app.use("/auth", require("./auth"));
+// api routes
 app.use("/api", require("./api"));
 
 app.get("/", (req, res) =>
