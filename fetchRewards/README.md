@@ -19,7 +19,7 @@ However, if you with to compile and run locally please follow these steps:
 
 1. Fork and clone this repo
 2. Run `npm install` in your terminal
-3. A) If you do not have psql on your machine, please run `npm install psql` in your terminal
+3. A) If you do not have psql on your machine, please run `npm install pg` in your terminal -- check this before submitting
    B) If you have psql on your machine run `createdb fetch-rewards-ann-marecki` in your terminal
 4. Run `npm run seed` in your terminal to seed the database
 5. Run `npm run start:dev` in your terminal to start the server on a localhost and load the front end
@@ -34,10 +34,19 @@ I used the following tech stack for my assessment:
 - Axios for front end routes
 - Express for backend routes
 - Sequelize.js for queries and database models
-- psql for the relational database
+- Psql for the relational database
 - Jasmine for testing
-- heroku to host
+- Heroku to host
 
 # Features
 
+- On the home page you can make two types of calls, dependent on the type of user you are in the system
+- As a payer you can add to your account
+- As a spender you can spend points
+
 # Further Development
+
+Features I would add next:
+
+- Authentication to secure transactions
+- Guest Accounts
