@@ -5,11 +5,13 @@ const {
 
 module.exports = router;
 
-//GET: all users to api/transactions/
+// GET: all users to api/transactions/
+// additional route I added that was not specified on takehome
+// response is all the transactions
 router.get("/", async (req, res, next) => {
   try {
     const transactions = await Transaction.findAll({
-      attributes: ["points", "transactionType"],
+      attributes: ["points", "type"],
       include: {
         model: User,
         attributes: ["payer"],
@@ -21,8 +23,10 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-//additional route I added that was not specified on takehome:
-//GET: specific user to api/users/:userId
+// additional route I added that was not specified on takehome:
+// GET: specific user to api/transactions/:transactionId
+// response is a single transaction
+
 router.get("/:transactionId", async (req, res, next) => {
   try {
     const transaction = await Transaction.findOne({
@@ -39,59 +43,75 @@ router.get("/:transactionId", async (req, res, next) => {
   }
 });
 
-//POST: add a transaction at api/transactions using inputted values in the body
-// front end will send payer name, type, and amount of points, date
+// POST: add a transaction at api/transactions/pay using inputted values in the body
+// client will send payer name, userId, type, points, timestamp
+// response will be the transaction
+// this will also update the user database to reflect the new point balances
 router.post("/pay", async (req, res, next) => {
   try {
-    const transaction = await Transaction.create(req.body);
-    const incrementUser = await User.findOne({
-      where: { payer: req.body.payer },
-    });
-    incrementUser.points += req.body.points;
-    incrementUser.save();
-    res.json(transaction);
+    if (req.body.type === "pay") {
+      const transaction = await Transaction.create(req.body);
+      const incrementUser = await User.findOne({
+        where: { payer: req.body.payer },
+      });
+      incrementUser.points += req.body.points;
+      incrementUser.save();
+      res.json(transaction);
+    } else {
+      res.send("Wrong type of transaction");
+    }
   } catch (error) {
     next(error);
   }
 });
 
+// POST: add a transaction at api/transactions/spend using inputted values in the body
+// client will send type and amount of points
+// response will be an array with the payers and the amount they paid
+// this will also update the user database to reflect the new point balances
 router.post("/spend", async (req, res, next) => {
   try {
-    await Transaction.create(req.body);
-    let transactionPoints = req.body.points;
-    const payers = await Transaction.findAll({
-      order: [["timestamp", "ASC"]],
-    });
-    let transactionPayers = [];
-    for (let i = 0; i < payers.length; i++) {
-      let oldest = payers[i];
+    if (req.body.type === "spend") {
+      await Transaction.create(req.body);
+      let transactionPoints = req.body.points;
 
-      if (transactionPoints > 0) {
-        if (transactionPoints > oldest.points) {
-          transactionPoints -= oldest.points;
-          const decrementUser = await User.findByPk(oldest.userId);
-
-          decrementUser.points = 0;
-          decrementUser.save();
-          transactionPayers.push({
-            payer: oldest.payer,
-            points: `-${oldest.points}`,
-          });
-        } else {
-          oldest.points -= transactionPoints;
-          const decrementUser = await User.findByPk(oldest.userId);
-          let newPoints = decrementUser.points - transactionPoints;
-          decrementUser.points = newPoints;
-          decrementUser.save();
-          transactionPayers.push({
-            payer: oldest.payer,
-            points: `-${transactionPoints}`,
-          });
-          transactionPoints = 0;
+      // retrieves all the transactions from oldest to newest
+      const payers = await Transaction.findAll({
+        order: [["timestamp", "ASC"]],
+      });
+      let transactionPayers = [];
+      for (let i = 0; i < payers.length; i++) {
+        let oldest = payers[i];
+        if (transactionPoints > 0) {
+          if (transactionPoints > oldest.points) {
+            transactionPoints -= oldest.points;
+            //updates user database
+            const decrementUser = await User.findByPk(oldest.userId);
+            decrementUser.points = 0;
+            decrementUser.save();
+            transactionPayers.push({
+              payer: oldest.payer,
+              points: `-${oldest.points}`,
+            });
+          } else {
+            oldest.points -= transactionPoints;
+            //updates user database
+            const decrementUser = await User.findByPk(oldest.userId);
+            let newPoints = decrementUser.points - transactionPoints;
+            decrementUser.points = newPoints;
+            decrementUser.save();
+            transactionPayers.push({
+              payer: oldest.payer,
+              points: `-${transactionPoints}`,
+            });
+            transactionPoints = 0;
+          }
         }
       }
+      res.send(transactionPayers);
+    } else {
+      res.send("Wrong type of transaction");
     }
-    res.send(transactionPayers);
   } catch (error) {
     next(error);
   }

@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 const db = require("../db");
 
-const SALT_ROUNDS = 5;
+//defining the postgresql model for the user
 
 const User = db.define("user", {
   payer: {

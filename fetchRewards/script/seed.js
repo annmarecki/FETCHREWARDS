@@ -21,21 +21,28 @@ const users = [
 
 const transactions = [
   {
-    userId: 1,
+    payer: "DANNON",
     points: 6000,
     timestamp: "2020-11-02T14:00:00Z",
+    type: "pay",
+    userId: 1,
   },
   {
-    userId: 2,
+    payer: "MILLER COORS",
     points: 500,
     timestamp: "2020-10-31T15:00:00Z",
+    type: "pay",
+    userId: 2,
   },
   {
-    userId: 1,
+    payer: "MILLER COORS",
     points: 4000,
     timestamp: "2022-03-31T14:00:00Z",
+    type: "pay",
+    userId: 2,
   },
 ];
+
 const seed = async () => {
   try {
     await db.sync({ force: true });
