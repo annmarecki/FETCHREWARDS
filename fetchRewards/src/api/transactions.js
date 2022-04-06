@@ -49,22 +49,26 @@ router.get("/:transactionId", async (req, res, next) => {
 // this will also update the user database to reflect the new point balances
 router.post("/pay", async (req, res, next) => {
   try {
-    if (req.body.type === "pay") {
+    const incrementUser = await User.findOne({
+      where: { payer: req.body.payer },
+    });
+    if (req.body.type === "pay" && incrementUser) {
+      console.log(incrementUser);
+      res.send("User doesn't exist, please use existing users");
       const transaction = await Transaction.create(req.body);
-      const incrementUser = await User.findOne({
-        where: { payer: req.body.payer },
-      });
-      if (!incrementUser) {
-        res.send("User doesn't exist, please use existing users");
-      } else {
-        incrementUser.addTransaction(transaction);
-        let newPoints = incrementUser.points + req.body.points;
-        incrementUser.points = newPoints;
-        incrementUser.save();
-        res.json(transaction);
-      }
+      incrementUser.addTransaction(transaction);
+      let newPoints = incrementUser.points + req.body.points;
+      incrementUser.points = newPoints;
+      incrementUser.save();
+      res.json(transaction);
     } else {
-      res.send("Wrong type of transaction");
+      !incrementUser && req.body.type !== "pay"
+        ? res.send(
+            "user doesn't exist, please use existing users AND wrong transaction type"
+          )
+        : !incrementUser
+        ? res.send("user doesn't exist, please use existing users")
+        : res.send("wrong type of transaction");
     }
   } catch (error) {
     next(error);
