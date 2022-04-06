@@ -52,9 +52,8 @@ router.post("/pay", async (req, res, next) => {
     const incrementUser = await User.findOne({
       where: { payer: req.body.payer },
     });
+    console.log(req.body.payer);
     if (req.body.type === "pay" && incrementUser) {
-      console.log(incrementUser);
-      res.send("User doesn't exist, please use existing users");
       const transaction = await Transaction.create(req.body);
       incrementUser.addTransaction(transaction);
       let newPoints = incrementUser.points + req.body.points;
