@@ -34,6 +34,7 @@ I used the following tech stack for my assessment:
 - Express for backend routes
 - Sequelize.js for queries and database models
 - Psql for the relational database
+- Chai for testing
 
 # Further Development
 
