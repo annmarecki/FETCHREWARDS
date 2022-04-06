@@ -25,11 +25,11 @@ describe("POST /api/transaction/pay", () => {
     );
   });
 
-  it('responds with "wrong type" if type is not spend', async () => {
+  it('responds with "Wrong type of transaction" if type is not spend', async () => {
     const response = await app
       .post("/api/transaction/pay")
       .send({ payer: "DANNON", points: 3005, type: "spend" });
-    // expect(response.body).to.be.an("string");
+    expect(response.body).to.be.an("string");
     expect(response.body).to.equal("Wrong type of transaction");
   });
 });
