@@ -24,19 +24,16 @@ const transactions = [
     userId: 1,
     points: 6000,
     timestamp: "2020-11-02T14:00:00Z",
-    transactionType: "pay",
   },
   {
     userId: 2,
     points: 500,
     timestamp: "2020-10-31T15:00:00Z",
-    transactionType: "pay",
   },
   {
     userId: 1,
     points: 4000,
     timestamp: "2022-03-31T14:00:00Z",
-    transactionType: "pay",
   },
 ];
 const seed = async () => {

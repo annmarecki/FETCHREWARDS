@@ -10,10 +10,6 @@ const Transaction = db.define("Transaction", {
   timestamp: {
     type: Sequelize.DATE,
   },
-  transactionType: {
-    type: Sequelize.ENUM,
-    values: ["pay", "spend"],
-  },
 });
 
 module.exports = Transaction;
