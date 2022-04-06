@@ -21,7 +21,7 @@ To compile and run locally please follow these steps:
    B) If you have postgresql on your machine run `createdb fetch-rewards-ann-marecki` in your terminal to create the database
 4. Run `npm run seed` in your terminal to seed the database
 5. Run `npm run start` in your terminal to start the server on a localhost
-6. Please open your browser of choice and go to http://localhost:3003 to call the api routes
+6. Please open your browser of choice and go to http://localhost:3003 to call the GET api routes
 7. To run tests please run `npm test` in your terminal
 
 ** All routes were tested on PostMan **
