@@ -44,7 +44,8 @@ router.get("/:transactionId", async (req, res, next) => {
 });
 
 // POST: add a transaction at api/transactions/pay using inputted values in the body
-// client will send payer name, userId, type, points, timestamp
+// client will send payer (required), type (required), points (required), timestamp
+// Added a type field to help organize the database, please make sure the body being sent includes {type: "pay"}
 // response will be the transaction
 // this will also update the user database to reflect the new point balances
 router.post("/pay", async (req, res, next) => {
@@ -52,9 +53,9 @@ router.post("/pay", async (req, res, next) => {
     const incrementUser = await User.findOne({
       where: { payer: req.body.payer },
     });
-    console.log(req.body.payer);
     if (req.body.type === "pay" && incrementUser) {
       const transaction = await Transaction.create(req.body);
+      //sequelize method to relate instances on databases
       incrementUser.addTransaction(transaction);
       let newPoints = incrementUser.points + req.body.points;
       incrementUser.points = newPoints;
@@ -75,7 +76,8 @@ router.post("/pay", async (req, res, next) => {
 });
 
 // POST: add a transaction at api/transactions/spend using inputted values in the body
-// client will send type and amount of points
+// client will send type and amount of points (both required)
+// Added a type field to help organize the database, please make sure the body being sent includes {type: "spend"}
 // response will be an array with the payers and the amount they paid
 // this will also update the user database to reflect the new point balances
 router.post("/spend", async (req, res, next) => {
