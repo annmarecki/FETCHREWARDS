@@ -3,8 +3,10 @@
   "description": "Fetch Rewards Backend Apprenticeship TakeHome Assessment",
   "main": "index.js",
   "scripts": {
+    "test-dev": "NODE_ENV='testing' DATABASE_URL='postgres://localhost/pillars_test' npm run test -- --watch",
     "seed": "node script/seed.js",
-    "start": "node src"
+    "start": "node src",
+    "test": "mocha --recursive --exit"
   },
   "dependencies": {
     "body-parser": "^1.19.1",
@@ -20,8 +22,12 @@
     "@babel/core": "^7.12.10",
     "@babel/register": "^7.12.10",
     "babel-loader": "^8.2.2",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^8.1.1",
     "esm": "^3.2.25",
     "nodemon": "^1.19.4",
+    "sinon": "^9.0.2",
     "supertest": "^4.0.2",
     "webpack": "^5.15.0",
     "webpack-cli": "^4.3.1"

@@ -54,9 +54,15 @@ router.post("/pay", async (req, res, next) => {
       const incrementUser = await User.findOne({
         where: { payer: req.body.payer },
       });
-      incrementUser.points += req.body.points;
-      incrementUser.save();
-      res.json(transaction);
+      if (!incrementUser) {
+        res.send("User doesn't exist, please use existing users");
+      } else {
+        incrementUser.addTransaction(transaction);
+        let newPoints = incrementUser.points + req.body.points;
+        incrementUser.points = newPoints;
+        incrementUser.save();
+        res.json(transaction);
+      }
     } else {
       res.send("Wrong type of transaction");
     }
@@ -82,6 +88,7 @@ router.post("/spend", async (req, res, next) => {
       let transactionPayers = [];
       for (let i = 0; i < payers.length; i++) {
         let oldest = payers[i];
+        console.log(oldest);
         if (transactionPoints > 0) {
           if (transactionPoints > oldest.points) {
             transactionPoints -= oldest.points;
